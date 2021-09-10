@@ -1,0 +1,75 @@
+syntax = "proto3";
+
+package lunaconf.api;
+
+option java_outer_classname = "DeviceApi";
+
+import "google/protobuf/empty.proto";
+import "google/api/annotations.proto";
+import "akkaserverless/annotations.proto";
+
+message Device{
+  string device_id = 1;
+  string customer_id = 2;
+  bool device_on = 3;
+}
+
+message CreateDeviceRequest{
+  string device_id = 1 [(akkaserverless.field).entity_key = true];
+}
+message ActivateDeviceRequest{
+  string device_id = 1 [(akkaserverless.field).entity_key = true];
+  string customer_id = 2;
+}
+message SwitchOnDeviceRequest{
+  string device_id = 1 [(akkaserverless.field).entity_key = true];
+}
+message SwitchOffDeviceRequest{
+  string device_id = 1 [(akkaserverless.field).entity_key = true];
+}
+
+message GetDeviceRequest{
+  string device_id = 1 [(akkaserverless.field).entity_key = true];
+}
+
+service DeviceService {
+
+  option (akkaserverless.service) = {
+    type: SERVICE_TYPE_ENTITY
+    component: "lunaconf.domain.DeviceEntity"
+  };
+  rpc CreateDevice(CreateDeviceRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/iot-device"
+      body: "*"
+    };
+  }
+  rpc ActivateDevice(ActivateDeviceRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      put: "/iot-device/{device_id}/activate"
+      body: "*"
+    };
+  }
+  rpc SwitchOnDevice(SwitchOnDeviceRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      put: "/iot-device/{device_id}/switch-on"
+      body: "*"
+    };
+  }
+  rpc SwitchOffDevice(SwitchOffDeviceRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      put: "/iot-device/{device_id}/switch-off"
+      body: "*"
+    };
+  }
+
+  rpc GetDevice(GetDeviceRequest) returns (Device){
+    option (google.api.http) = {
+      get: "/iot-device/{device_id}"
+    };
+  };
+
+}
+
+
+

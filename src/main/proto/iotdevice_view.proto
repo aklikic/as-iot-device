@@ -1,0 +1,128 @@
+syntax = "proto3";
+
+package lunaconf.view;
+
+option java_outer_classname = "DeviceViewModel";
+
+import "iotdevice_domain.proto";
+import "akkaserverless/annotations.proto";
+import "google/protobuf/any.proto";
+import "google/api/annotations.proto";
+
+
+message ByActiveStatusRequest{
+  bool active = 1;
+}
+
+message DeviceByActiveStatusView {
+  string device_id = 1;
+  string customer_id = 2;
+  bool active = 3;
+}
+
+service DeviceByActiveStatus{
+
+  option (akkaserverless.service) = {
+    type: SERVICE_TYPE_VIEW
+  };
+  rpc ProcessDeviceCreated(domain.DeviceCreated) returns (DeviceByActiveStatusView) {
+    option (akkaserverless.method).eventing.in = {
+      event_sourced_entity: "devices"
+    };
+    option (akkaserverless.method).view.update = {
+      table: "device_by_active_status"
+      transform_updates: true
+    };
+  }
+
+  rpc ProcessDeviceActivated(domain.DeviceActivated) returns (DeviceByActiveStatusView) {
+    option (akkaserverless.method).eventing.in = {
+      event_sourced_entity: "devices"
+    };
+    option (akkaserverless.method).view.update = {
+      table: "device_by_active_status"
+      transform_updates: true
+    };
+  }
+
+  rpc IgnoreOtherEvents(google.protobuf.Any) returns (DeviceByActiveStatusView) {
+    option (akkaserverless.method).eventing.in = {
+      event_sourced_entity: "devices"
+    };
+    option (akkaserverless.method).view.update = {
+      table: "device_by_active_status"
+      transform_updates: true
+    };
+  };
+
+  rpc GetDevicesByActiveStatus(ByActiveStatusRequest) returns (stream DeviceByActiveStatusView) {
+    option (akkaserverless.method).view.query = {
+      query: "SELECT * FROM device_by_active_status WHERE active = :active"
+    };
+  }
+
+}
+
+message ByCustomerRequest{
+  string customer_id = 1;
+}
+
+message DeviceByCustomerView {
+  string device_id = 1;
+  string customer_id = 2;
+  bool device_on = 3;
+}
+
+service DeviceByCustomer{
+
+  option (akkaserverless.service) = {
+    type: SERVICE_TYPE_VIEW
+  };
+
+  rpc ProcessDeviceActivated(domain.DeviceActivated) returns (DeviceByCustomerView) {
+    option (akkaserverless.method).eventing.in = {
+      event_sourced_entity: "devices"
+    };
+    option (akkaserverless.method).view.update = {
+      table: "device_by_customer"
+      transform_updates: true
+    };
+  }
+
+  rpc ProcessDeviceSwitchedOn(domain.DeviceSwitchedOn) returns (DeviceByCustomerView) {
+    option (akkaserverless.method).eventing.in = {
+      event_sourced_entity: "devices"
+    };
+    option (akkaserverless.method).view.update = {
+      table: "device_by_customer"
+      transform_updates: true
+    };
+  }
+
+  rpc ProcessDeviceSwitchedOff(domain.DeviceSwitchedOff) returns (DeviceByCustomerView) {
+    option (akkaserverless.method).eventing.in = {
+      event_sourced_entity: "devices"
+    };
+    option (akkaserverless.method).view.update = {
+      table: "device_by_customer"
+      transform_updates: true
+    };
+  }
+
+  rpc IgnoreOtherEvents(google.protobuf.Any) returns (DeviceByCustomerView) {
+    option (akkaserverless.method).eventing.in = {
+      event_sourced_entity: "devices"
+    };
+    option (akkaserverless.method).view.update = {
+      table: "device_by_customer"
+      transform_updates: true
+    };
+  };
+
+  rpc GetDevicesByCustomer(ByCustomerRequest) returns (stream DeviceByCustomerView) {
+    option (akkaserverless.method).view.query = {
+      query: "SELECT * FROM device_by_customer WHERE customer_id = :customer_id"
+    };
+  }
+
+}
