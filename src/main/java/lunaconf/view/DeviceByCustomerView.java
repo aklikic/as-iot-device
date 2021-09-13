@@ -23,26 +23,26 @@ public class DeviceByCustomerView extends AbstractDeviceByCustomerView {
   public UpdateEffect<DeviceViewModel.DeviceByCustomerView> processDeviceActivated(
     DeviceViewModel.DeviceByCustomerView state, DeviceDomain.DeviceActivated deviceActivated) {
     if(!state.equals(DeviceViewModel.DeviceByCustomerView.getDefaultInstance()))
-      return updateEffects().ignore();
+      return effects().ignore();
     DeviceViewModel.DeviceByCustomerView newState = DeviceViewModel.DeviceByCustomerView.newBuilder().setDeviceId(deviceActivated.getDeviceId()).setCustomerId(deviceActivated.getCustomerId()).setDeviceOn(false).build();
-    return updateEffects().updateState(newState);
+    return effects().updateState(newState);
   }
 
   @Override
   public UpdateEffect<DeviceViewModel.DeviceByCustomerView> processDeviceSwitchedOn(DeviceViewModel.DeviceByCustomerView state, DeviceDomain.DeviceSwitchedOn deviceSwitchedOn) {
     DeviceViewModel.DeviceByCustomerView newState = state.toBuilder().setDeviceOn(true).build();
-    return updateEffects().updateState(newState);
+    return effects().updateState(newState);
   }
 
   @Override
   public UpdateEffect<DeviceViewModel.DeviceByCustomerView> processDeviceSwitchedOff(DeviceViewModel.DeviceByCustomerView state, DeviceDomain.DeviceSwitchedOff deviceSwitchedOff) {
     DeviceViewModel.DeviceByCustomerView newState = state.toBuilder().setDeviceOn(false).build();
-    return updateEffects().updateState(newState);
+    return effects().updateState(newState);
   }
 
   @Override
   public UpdateEffect<DeviceViewModel.DeviceByCustomerView> ignoreOtherEvents(
     DeviceViewModel.DeviceByCustomerView state, Any any) {
-    return updateEffects().ignore();
+    return effects().ignore();
   }
 }

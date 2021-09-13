@@ -11,13 +11,13 @@ import "google/api/annotations.proto";
 
 
 message ByActiveStatusRequest{
-  bool active = 1;
+  string active = 1;
 }
 
 message DeviceByActiveStatusView {
   string device_id = 1;
   string customer_id = 2;
-  bool active = 3;
+  string active = 3;
 }
 
 service DeviceByActiveStatus{

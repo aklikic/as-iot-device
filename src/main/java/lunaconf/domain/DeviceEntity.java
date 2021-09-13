@@ -69,7 +69,7 @@ public class DeviceEntity extends AbstractDeviceEntity {
   @Override
   public Effect<Empty> switchOffDevice(DeviceDomain.DeviceState currentState, DeviceApi.SwitchOffDeviceRequest switchOffDeviceRequest) {
     if (currentState.equals(DeviceDomain.DeviceState.getDefaultInstance()))
-      return effects().error("Device does not exit. It needs to be created first!");
+      return effects().error("Device does not exist. It needs to be created first!");
 
     if(currentState.getCustomerId().isEmpty())
       return effects().error("Device not activated!");
@@ -85,7 +85,7 @@ public class DeviceEntity extends AbstractDeviceEntity {
   @Override
   public Effect<DeviceApi.Device> getDevice(DeviceDomain.DeviceState currentState, DeviceApi.GetDeviceRequest getDeviceRequest) {
     if (currentState.equals(DeviceDomain.DeviceState.getDefaultInstance())) {
-      return effects().error("Device does not exit. It needs to be created first!");
+      return effects().error("Device does not exist. It needs to be created first!");
     } else {
       DeviceApi.Device device = DeviceApi.Device.newBuilder().setDeviceId(getDeviceRequest.getDeviceId()).setCustomerId(currentState.getCustomerId()).setDeviceOn(currentState.getDeviceOn()).build();
       return effects().reply(device);

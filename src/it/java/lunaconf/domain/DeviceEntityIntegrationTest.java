@@ -156,7 +156,7 @@ public class DeviceEntityIntegrationTest {
     String deviceId = UUID.randomUUID().toString();
     String customerId = UUID.randomUUID().toString();
     Exception exception = assertThrows(ExecutionException.class, () -> client.switchOffDevice(DeviceApi.SwitchOffDeviceRequest.newBuilder().setDeviceId(deviceId).build()).toCompletableFuture().get(2, SECONDS));
-    assertTrue(exception.getCause().getMessage().contains("Device does not exit. It needs to be created first!"));
+    assertTrue(exception.getCause().getMessage().contains("Device does not exist. It needs to be created first!"));
 
   }
 
@@ -226,7 +226,7 @@ public class DeviceEntityIntegrationTest {
 
   private boolean isInNotActiveByStatusView(String deviceId) throws Exception{
     Thread.sleep(1000);
-    Source<DeviceViewModel.DeviceByActiveStatusView,?> resultSource = viewByActiveStatusClient.getDevicesByActiveStatus(DeviceViewModel.ByActiveStatusRequest.newBuilder().setActive(false).build());
+    Source<DeviceViewModel.DeviceByActiveStatusView,?> resultSource = viewByActiveStatusClient.getDevicesByActiveStatus(DeviceViewModel.ByActiveStatusRequest.newBuilder().setActive("false").build());
     List<DeviceViewModel.DeviceByActiveStatusView> devices = resultSource.runWith(Sink.seq(),system).toCompletableFuture().get(3,SECONDS);
     devices.stream().forEach(d->log.info("not active device: {}",d.getDeviceId()));
     return devices.stream().filter(d->d.getDeviceId().equals(deviceId)).count() == 1;
