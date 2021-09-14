@@ -316,7 +316,7 @@
   <properties>
     <scala.binary.version>2.13</scala.binary.version>
     <jdk.target>11</jdk.target>
-    <dockerImage>my-docker-repo/${project.artifactId}</dockerImage>
+    <dockerImage>aklikic/${project.artifactId}</dockerImage>
     <mainClass>lunaconf.Main</mainClass>
     <akkaserverless-sdk.version>0.7.0</akkaserverless-sdk.version>
     <akka-grpc.version>1.1.1</akka-grpc.version>

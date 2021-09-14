@@ -67,6 +67,10 @@ message ByCustomerRequest{
   string customer_id = 1;
 }
 
+message DeviceByCustomerViewList{
+  repeated DeviceByCustomerView devices = 1;
+}
+
 message DeviceByCustomerView {
   string device_id = 1;
   string customer_id = 2;
@@ -119,9 +123,9 @@ service DeviceByCustomer{
     };
   };
 
-  rpc GetDevicesByCustomer(ByCustomerRequest) returns (stream DeviceByCustomerView) {
+  rpc GetDevicesByCustomer(ByCustomerRequest) returns (DeviceByCustomerViewList) {
     option (akkaserverless.method).view.query = {
-      query: "SELECT * FROM device_by_customer WHERE customer_id = :customer_id"
+      query: "SELECT * AS devices FROM device_by_customer WHERE customer_id = :customer_id"
     };
   }
 

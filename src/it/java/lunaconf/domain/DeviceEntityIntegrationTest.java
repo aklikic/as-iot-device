@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
 
 import static java.util.concurrent.TimeUnit.*;
@@ -234,9 +235,9 @@ public class DeviceEntityIntegrationTest {
 
   private boolean isInByCustomerView(String deviceId, String customerId) throws Exception{
     Thread.sleep(1000);
-    Source<DeviceViewModel.DeviceByCustomerView,?> resultSource = viewByCustomerClient.getDevicesByCustomer(DeviceViewModel.ByCustomerRequest.newBuilder().setCustomerId(customerId).build());
-    List<DeviceViewModel.DeviceByCustomerView> devices = resultSource.runWith(Sink.seq(),system).toCompletableFuture().get(3,SECONDS);
-    return devices.stream().filter(d->d.getDeviceId().equals(deviceId)).count() == 1;
+    CompletionStage<DeviceViewModel.DeviceByCustomerViewList> resultSource = viewByCustomerClient.getDevicesByCustomer(DeviceViewModel.ByCustomerRequest.newBuilder().setCustomerId(customerId).build());
+    DeviceViewModel.DeviceByCustomerViewList list = resultSource.toCompletableFuture().get(3,SECONDS);
+    return list.getDevicesList().stream().filter(d->d.getDeviceId().equals(deviceId)).count() == 1;
   }
 
 }
